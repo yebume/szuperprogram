@@ -1,0 +1,10 @@
+#1,No game no life,Madhouse,Fantasy,Light_novel,2014,SPRING,12
+#2,Steins Gate,White Fox,Sci-Fi,Visual_novel,2011,SPRING,24
+#3,Tensei shitara Slime Datta Ken,8bit,Shounen,Light_novel,2018,FALL,24
+#4,Konosuba	Studio Deen,Comedy,Light_novel,2016,WINTER,10
+#5,Mekakucity Actors,Shaft,Sci-Fi,Music,2014,SPRING,12	
+#6,Naruto,Studio Pierrot,Shounen,Manga,2002,FALL,220
+#7,Toradora,J.C.Staff,Slice_of_Life,Light_novel,2008,FALL,25
+#8,Death Note,Madhouse,Shounen,Manga,2006,FALL,37
+#9,Fullmetal Alchemist,Bones,Shounen,Manga,2003,FALL,51
+#10,JoJo Stardust Crusaders,David Production,Shounen,Manga,2014,SPRING,24
