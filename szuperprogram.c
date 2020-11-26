@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 
-
 typedef enum MUFALY {Action,Adventure,Comedy,Drama,Slice_of_Life,Fantasy,Magic,Supernatural,Horror,Mystery,Psychological,Romance,SciFi}MUFALY;
 typedef enum EVSZAK {SPRING,SUMMER,FALL,WINTER}EVSZAK;
 typedef enum ALAP   {Light_novel,Visual_novel,Manga,Muisc}ALAP;
@@ -42,13 +41,6 @@ typedef struct User
 
 
 
-User *users_head;
-User *users_tail;
-Anime *animes_head;
-Anime *animes_tail;
-
-
-
 void push_anime(Anime NEW, Anime *tail)
 {
     Anime *newp = (Anime*)malloc(sizeof(Anime));
@@ -67,9 +59,9 @@ void push_anime(Anime NEW, Anime *tail)
     newp ->EP = NEW.EP;
 }
 
-void anime2list(void)
+void anime2list(Anime **animes_head, Anime **animes_tail)
 {
-    FILE *fp =  fopen("animek.txt", "r");
+    FILE *fp =  fopen("NAGYHAZI/animek.txt", "r");
     if (fp == NULL) return;
     Anime *head = (Anime*)malloc(sizeof(Anime));
     Anime *tail = (Anime*)malloc(sizeof(Anime));
@@ -82,28 +74,30 @@ void anime2list(void)
     {
         push_anime(NEW, tail);
     }
-    animes_head = head;
-    animes_tail = tail;
+    *animes_head = head;
+    *animes_tail = tail;
 }
 
-
+/*-------------------------------------------------------------------------------------------------------------------------*/
 
 void fesulista(User_data elemek, User_data *datahead, User_data *datatail)
 {
-    User_data *listelem = (User_data*)malloc(sizeof(User_data));   
-    listelem ->ID = elemek.ID;
-    listelem ->seen = elemek.seen;
+    User_data *newp = (User_data*)malloc(sizeof(User_data));
 
-    listelem ->next = datatail;
-    listelem ->prev = datatail ->prev;
-    datatail ->prev ->next = listelem;
-    datatail ->prev = listelem;
+    newp ->next = datatail;
+    newp ->prev = datatail ->prev;
+    datatail ->prev ->next = newp;
+    datatail ->prev = newp;
+
+    newp ->ID = elemek.ID;
+    newp ->seen = elemek.seen;
 }
 
-void push_user(User UNEW, User *utail)
+
+
+User *push_user(User UNEW, User *utail) //működnie kellene
 {
     User *newp = (User*)malloc(sizeof(User));
-
 
     newp ->next = utail;
     newp ->prev = utail ->prev;
@@ -111,64 +105,68 @@ void push_user(User UNEW, User *utail)
     utail ->prev = newp;
 
     strcpy(newp ->USER, UNEW.USER);
-
-    FILE *fptr =  fopen("profilok.txt", "r");
-    if (fptr == NULL) return;
-
-    User_data elemek;
-    User_data *datahead = (User_data*)malloc(sizeof(User_data));
-    User_data *datatail = (User_data*)malloc(sizeof(User_data));
-
-    newp ->datas = datahead;
-
-    datahead ->prev = NULL;
-    datahead ->next = datatail;
-    datatail ->prev = datahead;
-    datatail ->next = NULL;
-
-    while (fscanf(fptr,"#%d,%d",&elemek.seen, &elemek.ID))
-    {
-        fesulista(elemek, datahead, datatail);
-    }
-
-    datahead ->next ->prev = NULL;
-    newp ->datas =datahead ->next;
-    free(datahead);
-    datatail ->prev -> next = NULL;
-    free(datahead);
+    return newp;
 }
 
-void userdata2list(void)
+
+
+
+void userdata2list(User **users_head, User **users_tail)
 {
-    FILE *fp =  fopen("profilok.txt", "r");
+    FILE *fp =  fopen("NAGYHAZI/profilok.txt", "r");
     if (fp == NULL) return;
+
     User *head = (User*)malloc(sizeof(User));
     User *tail = (User*)malloc(sizeof(User));
 
     head ->next = tail;
     tail ->prev = head;
-
     tail ->next = NULL;
     head ->prev = NULL;
 
     User NEW;
+    User_data elemek;
 
-    while(fscanf(fp,"%[^,]", NEW.USER)==1)
+    while(fscanf(fp,"\n%[^,]", NEW.USER)==1)
     {
-        push_user(NEW, tail);
+        User *curr = push_user(NEW, tail);
+
+        User_data *datahead = (User_data*)malloc(sizeof(User_data));
+        User_data *datatail = (User_data*)malloc(sizeof(User_data));
+
+        NEW.datas = datahead;
+        datahead ->prev = NULL;
+        datahead ->next = datatail;
+        datatail ->prev = datahead;
+        datatail ->next = NULL;
+
+        curr->datas = datahead;
+
+        while (fscanf(fp,",#%d,%d",&elemek.seen, &elemek.ID)==2)
+        {
+            fesulista(elemek, datahead, datatail);
+        }
     }
-    users_head = head;
-    users_tail = tail;
+    *users_head = head;
+    *users_tail = tail;
+    if (fclose(fp) != 0)
+    {
+        printf("File close error\n");
+        return;
+    }
 }
 
-void users_kilistazasa(void)
+/*-------------------------------------------------------------------------------------------------------------------------*/
+
+
+void users_kilistazasa(User *users_head)
 {
     printf("Létező profilok:\n");
     User *curr = users_head ->next;
 
     while(curr ->next != NULL)                                                       
     {
-        printf("%s ", curr ->USER);
+        printf("%s\n", curr ->USER);
         curr = curr->next;
     }
 }
@@ -225,9 +223,16 @@ void user_menu(void)
 
 int main(void)
 {
-    userdata2list();
-    anime2list();
-    users_kilistazasa();
-    printf("%s", users_head->USER);
+    User *users_head;
+    User *users_tail;
+    userdata2list(&users_head, &users_tail);
+
+    Anime *animes_head;
+    Anime *animes_tail;
+    anime2list(&animes_head, &animes_tail);
+
+    users_kilistazasa(users_head);
+
     //user_menu();
+    return 0;
 }
