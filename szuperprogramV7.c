@@ -62,7 +62,7 @@ void anime2list(Anime **animes_head, Anime **animes_tail)
     {
         printf("File open error\n");
         return;
-    } 
+    }
     Anime *head = (Anime*)malloc(sizeof(Anime));
     Anime *tail = (Anime*)malloc(sizeof(Anime));
     head ->next = tail;
@@ -113,7 +113,7 @@ void userdata2list(User **users_head, User **users_tail)
     {
         printf("File open error\n");
         return;
-    } 
+    }
 
     User *head = (User*)malloc(sizeof(User));
     User *tail = (User*)malloc(sizeof(User));
@@ -176,14 +176,14 @@ int most_pop_anim(User *users_head,  Anime *animes_head)
         animcurr = animcurr ->next;
     }
 
-    
+
     int *nepszeruseg = (int*) malloc(db * sizeof(int)); // tomb amiben benne van, hogy melyik animet hányan látták, id szerint
-    
+
     for (int i = 0; i < db; i++)                        // tomb kinullázása
     {
         nepszeruseg[i] = 0;
     }
-    
+
 
     User *usercurr = users_head->next;
     animcurr = animes_head;
@@ -228,7 +228,7 @@ void print_animes(User *name, User *users_head, User *users_tail, Anime *animes_
         curr_user = curr_user->next;
     }
         int pop_anim = most_pop_anim(users_head, animes_head);
-        Anime *mostpop = most_pop_anim(pop_anim, animes_head);
+        Anime *mostpop = anime_search(pop_anim, animes_head);
         printf("\nA legnépszerübb anime: %s", mostpop->name);
     return;
 }
@@ -263,6 +263,16 @@ Anime* fiftypercent(char nevbuffer[], Anime *animes_head)
     return NULL;
 }
 
+void lista_add()
+{
+
+}
+
+void anime_beszur()
+{
+    
+}
+
 void anime_add(Anime *animes_head)
 {
     printf("Mi az anime címe, amit bele szeretnél rakni a listádba? (Max 25 karakter, és nem lehet benne vessző)");
@@ -274,10 +284,10 @@ void anime_add(Anime *animes_head)
         printf("%s-re gondoltál? (1/0)", ajanlas ->name);
         int logikai;
         scanf("%d", &logikai);
-        if (logikai == 1)
-            lista_add();
+        // if (logikai == 1)
+        //     lista_add();
     }
-    anime_beszur();
+    // anime_beszur();
     return;
 }
 
@@ -348,14 +358,15 @@ void anime_plus(User *name)
     return;
 }
 
+
 void anime_menu(User *name, User *users_head, User *users_tail, Anime *animes_head, Anime *animes_tail)
 {
     print_animes(name, users_head, users_tail, animes_head, animes_tail);
-    
+
     int selection = 0;
     while (selection != EXIT)
     {
-        print_animemenu();;
+        print_animemenu();
         scanf("%d", &selection);
 
         switch (selection)
@@ -378,7 +389,7 @@ void users_kilistazasa(User *users_head)
     printf("\nLétező profilok:\n\n");
     User *curr = users_head ->next;
 
-    while(curr ->next != NULL)                                                       
+    while(curr ->next != NULL)
     {
         printf("%s\n", curr ->USER);
         curr = curr->next;
@@ -388,12 +399,12 @@ void users_kilistazasa(User *users_head)
 void pop_user(User *users_head, char nevbuffer[])
 {
     User *curr = users_head->next;
-    
+
     while (strcmp(nevbuffer, curr ->USER)==0)
     {
         curr = curr ->next;
     }
-    
+
     curr ->prev ->next = curr -> next;
     curr ->next ->prev = curr ->prev;
     free(curr);
@@ -403,7 +414,7 @@ User *user_search(User *users_head, char nevbuffer[])
 {
     User *curr = users_head->next;
 
-    while (curr->next =! NULL)
+    while (curr->next != NULL)
     {
         if(strcmp(curr->USER, nevbuffer)==0)
             return curr;
@@ -439,7 +450,7 @@ void user_del(User *users_head)
     users_kilistazasa(users_head);
     char nevbuffer[26];
     scanf("%s", nevbuffer);
-    if (user_search(users_head, nevbuffer) == NULL) 
+    if (user_search(users_head, nevbuffer) == NULL)
     {
         printf("Nem valid felhasználó!");
         return;
@@ -459,10 +470,10 @@ void user_edit(User *users_head)
     users_kilistazasa(users_head);
     printf("\nMelyik felhasznló nevét szeretnéd módosítani?\n");
     int i;
-    char melyik[26]; 
+    char melyik[26];
     scanf("%s", melyik);
     User *valid = user_search(users_head, melyik);
-    if (valid == NULL)
+    if (valid == NULL) return;
 
     printf("Biztos? (1/0)");
     while(scanf("%d",&i))
@@ -535,7 +546,7 @@ int main(void)
     Anime *animes_tail;
     anime2list(&animes_head, &animes_tail);
 
-    //user_menu(users_head, users_tail, animes_head, animes_tail);
+    user_menu(users_head, users_tail, animes_head, animes_tail);
     //save_data(users_head, users_tail, animes_head, animes_tail);
     print_animes(users_head->next, users_head, users_tail, animes_head, animes_tail);
     return 0;
