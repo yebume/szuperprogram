@@ -1,5 +1,6 @@
 
 //A file az alabbi modon vannak beallitva: "NAGYHAZI/xyz.txt" !!!
+// Admin módba belépni akkor lehet ha logineltél és beírod hogy 42
 
 #include <stdio.h>
 #include <string.h>
@@ -13,6 +14,45 @@ typedef enum COMMAND {ADD = 1,DEL,EDIT,LOGIN,EXIT}COMMAND;       //0, 1, 2, 3, 4
 typedef enum ANIMCOMM {HOZZAAD = 1,TOROL,PLUS,KILEP,ADMINMENU=42}ANIMCOMM;
 typedef enum ADMIN {DELETE, OUT}ADMIN;
 
+const char* mufaly(MUFALY x) 
+{
+   switch (x) 
+   {
+    case Action: return "Action";
+    case Adventure: return "Adventure";
+    case Comedy: return "Comedy";
+    case Drama: return "Drama";
+    case Slice_of_Life: return "Slice_of_Life";
+    case Fantasy: return "Fantasy";
+    case Magic: return "Magic";
+    case Supernatural: return "Supernatural";
+    case Horror: return "Horror";
+    case Mystery: return "Mystery";
+    case Psychological: return "Psychological";
+    case Romance: return "Romance";
+    case Sci_Fi: return "Sci_Fi";
+   }
+}
+const char* evszak(EVSZAK x) 
+{
+   switch (x) 
+   {
+      case SPRING: return "SPRING";
+      case SUMMER: return "SUMMER";
+      case FALL: return "FALL";
+      case WINTER: return "WINTER";
+   }
+}
+const char* alap(ALAP x) 
+{
+   switch (x) 
+   {
+      case Light_novel: return "Light_novel";
+      case Visual_novel: return "Visual_novel";
+      case Manga: return "Manga";
+      case Muisc: return "Muisc";
+   }
+}
 
 typedef struct Anime
 {
@@ -230,10 +270,11 @@ void print_animes(User *name, User *users_head, User *users_tail, Anime *animes_
 {
     User_data *curr_user = name->datas->next;
     printf("\n\n");
+    printf("#  ID                     Anime neve                    Studio          Mufaly            Alap   Ev     Evszak   EP Latott\n");
     while(curr_user ->next != NULL)
     {
         Anime * curr_anime = anime_search(curr_user->ID, animes_head);
-        printf("#%4d %30s %25s %4d %4d %4d %4d %4d %4d\n", curr_user->ID, curr_anime->name, curr_anime->studio, curr_anime->genre, curr_anime->base, curr_anime->year, curr_anime->season, curr_anime->EP, curr_user->seen);
+        printf("#%4d %30s %25s %15s %15s %4d %10s %4d   %4d\n", curr_user->ID, curr_anime->name, curr_anime->studio, mufaly(curr_anime->genre), alap(curr_anime->base), curr_anime->year, evszak(curr_anime->season), curr_anime->EP, curr_user->seen);
         curr_user = curr_user->next;
     }
         int pop_anim = most_pop_anim(users_head, animes_head, animes_tail);
@@ -386,9 +427,10 @@ void anime_add(User *name, Anime *animes_head, Anime *animes_tail)
 {
     Anime *curr = animes_head ->next;
     printf("\n\n\n");
+    printf("#  ID                     Anime neve                    Studio          Mufaly            Alap   Ev     Evszak   EP\n");
     while (curr ->next != NULL)
     {
-        printf("#%4d %30s %25s %15d %15d %d %10d %4d\n", curr->ID, curr->name, curr->studio, curr->genre, curr->base, curr->year, curr->season, curr->EP);
+        printf("#%4d %30s %25s %15s %15s %4d %10s %4d\n", curr->ID, curr->name, curr->studio, mufaly(curr->genre), alap(curr->base), curr->year, evszak(curr->season), curr->EP);
         curr = curr ->next;
     }
     printf("\n\nItt van az anime amit keresel?(1/0)\n");
